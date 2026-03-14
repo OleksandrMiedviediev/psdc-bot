@@ -1,0 +1,2 @@
+[console_scripts]
+psdc-bot = psdc_bot.main:main

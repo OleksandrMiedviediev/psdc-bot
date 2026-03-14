@@ -1,0 +1,29 @@
+Metadata-Version: 2.4
+Name: psdc-bot
+Version: 0.1.0
+Summary: Bot for assigning shifts from CSV files
+Home-page: https://github.com/username/psdc-bot
+Author: Oleksandr Miedviediev
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+Dynamic: summary
+
+# PSCD Bot
+
+PSDC Bot – Python бот для автоматического присвоения смен из CSV-файла.  
+
+## Установка
+
+```bash
+pip install git+https://github.com/username/psdc-bot.git
