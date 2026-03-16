@@ -97,10 +97,15 @@ class App:
             "card": "#111827",
             "text": "#e5e7eb",
             "muted": "#94a3b8",
-            "accent": "#3b82f6",
-            "accent_hover": "#2563eb",
-            "success": "#10b981",
-            "success_hover": "#059669",
+            "button_text": "#080065",
+            "accent": "#1d4ed8",
+            "accent_hover": "#1e40af",
+            "success": "#059669",
+            "success_hover": "#047857",
+            "menu_bg": "#ffffff",
+            "menu_text": "#111827",
+            "menu_active_bg": "#e5e7eb",
+            "menu_active_text": "#111827",
         }
 
         self.container = tk.Frame(root, bg=self.colors["bg"])
@@ -147,19 +152,20 @@ class App:
             command=self.on_language_change,
         )
         self.language_menu.config(
-            bg="#1f2937",
-            fg=self.colors["text"],
-            activebackground="#374151",
-            activeforeground=self.colors["text"],
+            bg=self.colors["menu_bg"],
+            fg=self.colors["menu_text"],
+            activebackground=self.colors["menu_active_bg"],
+            activeforeground=self.colors["menu_active_text"],
             highlightthickness=0,
             bd=0,
             font=("Arial", 10),
+            disabledforeground=self.colors["menu_text"],
         )
         self.language_menu["menu"].config(
-            bg="#1f2937",
-            fg=self.colors["text"],
-            activebackground="#374151",
-            activeforeground=self.colors["text"],
+            bg=self.colors["menu_bg"],
+            fg=self.colors["menu_text"],
+            activebackground=self.colors["menu_active_bg"],
+            activeforeground=self.colors["menu_active_text"],
             bd=0,
             font=("Arial", 10),
         )
@@ -170,15 +176,16 @@ class App:
             text=self._t("select_button"),
             command=self.select_input,
             font=("Arial", 11, "bold"),
-            fg="white",
+            fg=self.colors["button_text"],
             bg=self.colors["accent"],
             activebackground=self.colors["accent_hover"],
-            activeforeground="white",
+            activeforeground=self.colors["button_text"],
             relief="flat",
             bd=0,
             padx=16,
             pady=10,
             cursor="hand2",
+            disabledforeground=self.colors["button_text"],
         )
         self.select_button.pack(pady=(0, 16))
         self.select_button.bind("<Enter>", lambda e: self.select_button.config(bg=self.colors["accent_hover"]))
@@ -231,15 +238,16 @@ class App:
             text=self._t("generate_button"),
             command=self.generate,
             font=("Arial", 11, "bold"),
-            fg="white",
+            fg=self.colors["button_text"],
             bg=self.colors["success"],
             activebackground=self.colors["success_hover"],
-            activeforeground="white",
+            activeforeground=self.colors["button_text"],
             relief="flat",
             bd=0,
             padx=16,
             pady=10,
             cursor="hand2",
+            disabledforeground=self.colors["button_text"],
         )
         self.generate_button.pack(pady=(0, 22))
         self.generate_button.bind("<Enter>", lambda e: self.generate_button.config(bg=self.colors["success_hover"]))
