@@ -1,60 +1,63 @@
 # PSDC Shift Calculator
 
-A simple desktop app (Tkinter) that reads a CSV with timestamps and adds a `shift` column in the format:
+Estetyczna i prosta aplikacja desktopowa na Tkinter do wyliczania zmian w plikach CSV.
+Program odczytuje plik z datą/czasem i dodaje kolumnę `shift` w formacie:
 
-- `FRONT NRT`
-- `BACK STH`
+- `FRONT STH`
+- `BACK NRT`
 
-Supports **Windows** and **macOS**.
-
----
-
-## Features
-
-- Select input CSV via GUI
-- Choose the initial shift type: `NRT` or `STH`
-- Choose the Wednesday team: `FRONT` or `BACK`
-- Automatic day/night period detection
-- Automatic `NRT ↔ STH` switching when the period changes
-- Save the result to a new CSV
+Obsługiwane systemy: **macOS** i **Windows**.
 
 ---
 
-## Shift Assignment Rules
+## ✨ Co robi aplikacja
 
-### 1) Period
-
-- **DAY**: `06:30` – `17:00`
-- **NIGHT**: `18:00` – `04:30`
-- Time outside these ranges gets an empty `shift` value
-
-### 2) Team (FRONT/BACK)
-
-- **FRONT**: Sunday, Monday, Tuesday
-- **BACK**: Thursday, Friday, Saturday
-- **Wednesday**: selected by the user in the GUI
-
-For night records up to `04:30`, the previous calendar date is used (night-shift logic).
-
-### 3) Shift Type (NRT/STH)
-
-- The first valid record gets the user-selected starting type
-- On every `DAY` ↔ `NIGHT` transition, the type switches automatically: `NRT ↔ STH`
+- otwiera plik CSV przez interfejs graficzny;
+- pokazuje pierwszą i ostatnią datę z pliku;
+- odczytuje datę/czas w wielu formatach i potrafi automatycznie wykryć kolumnę czasu;
+- wylicza zmianę dla każdego wiersza według reguł okresu/zespołu/rotacji;
+- zapisuje wynik do nowego pliku CSV.
 
 ---
 
-## Input CSV Format
+## ⚙️ Zasady wyliczania zmian
 
-The CSV must contain one of these time columns:
+### 1) Okres
+
+- **DAY:** `06:30` – `17:00`
+- **NIGHT:** `18:00` – `04:30`
+- czas poza tymi zakresami otrzymuje pustą wartość `shift`.
+
+### 2) Zespół (FRONT/BACK)
+
+- **FRONT:** niedziela, poniedziałek, wtorek;
+- **BACK:** czwartek, piątek, sobota;
+- **środa:** wyznaczana automatycznie według tygodniowej rotacji.
+
+Dla nocnych rekordów do `04:30` używana jest poprzednia data kalendarzowa.
+
+### 3) Typ zmiany (STH/NRT)
+
+- stosowana jest 28-dniowa rotacja względem daty bazowej;
+- przypisanie `DAY/NIGHT` dla `STH/NRT` zmienia się cyklicznie.
+
+Daty bazowe są ustawione w `shift_logic.py`:
+
+- `BASE_DATE = 2026-03-08`
+- `BASE_WEDNESDAY = 2026-03-11`
+
+---
+
+## 📄 Format wejściowego CSV
+
+CSV musi zawierać jedną z kolumn czasu:
 
 - `First container scan to trailer`
 - `first_container_scan_to_trailer_time_local`
 
-Date/time format:
+Format daty/czasu: `YYYY-MM-DD HH:MM:SS`
 
-`YYYY-MM-DD HH:MM:SS`
-
-Example:
+Przykład:
 
 ```csv
 first_container_scan_to_trailer_time_local
@@ -65,70 +68,74 @@ first_container_scan_to_trailer_time_local
 
 ---
 
-## Run
+## 🐍 Instalacja Python
 
-### Windows
+- Oficjalna strona pobierania Python: https://www.python.org/downloads/
+- Instrukcja instalacji (oficjalna dokumentacja): https://docs.python.org/3/using/index.html
 
-1. Double-click `run_windows.bat`
-2. In the GUI, select the input CSV
-3. Choose the starting type (`NRT`/`STH`) and Wednesday team (`FRONT`/`BACK`)
-4. Click **Generate CSV** and choose the output path
+Zalecana wersja: **Python 3.10+**
 
-### macOS
-
-1. Make the script executable once:
-
-   ```bash
-   chmod +x run_mac.command
-   ```
-
-2. Double-click `run_mac.command`
-3. Repeat the same steps in the GUI
-
-### Manual Run
-
-```bash
-python main.py
-# or
-python3 main.py
-```
-
----
-
-## Project Structure
-
-| File | Purpose |
-| --- | --- |
-| `main.py` | Entry point (starts GUI) |
-| `gui.py` | GUI and user action handling |
-| `csv_reader.py` | CSV read/write logic |
-| `shift_logic.py` | Shift assignment logic |
-| `run_windows.bat` | Quick launch on Windows |
-| `run_mac.command` | Quick launch on macOS |
-| `source.csv` | Example input file |
-| `data/` | Output data folder |
-
----
-
-## Requirements
-
-- Python `3.10+`
-
-Version check:
+Sprawdzenie wersji:
 
 ```bash
 python --version
-# or
+# lub
 python3 --version
 ```
 
 ---
 
-## Notes
+## ▶️ Uruchomienie
 
-- If the output CSV is open in Excel, writing may fail with a permission error
-- The `data` folder is created automatically (if it does not exist)
+### Windows
 
-## Author
+1. Kliknij dwukrotnie `run_windows.bat`
+2. Wybierz wejściowy plik CSV
+3. Kliknij **Generate CSV**
+4. Wybierz miejsce zapisu wyniku
 
-Mode by: [@miedolek](https://github.com/OleksandrMiedviediev)
+### macOS
+
+1. Jednorazowo nadaj plikowi uruchomieniowemu uprawnienia do wykonania:
+
+   ```bash
+   chmod +x run_mac.command
+   ```
+
+2. Kliknij dwukrotnie `run_mac.command`
+3. Wybierz wejściowy CSV i zapisz wynik
+
+### Uruchomienie ręczne
+
+```bash
+python main.py
+# lub
+python3 main.py
+```
+
+---
+
+## 🗂️ Struktura projektu
+
+| Plik | Przeznaczenie |
+| --- | --- |
+| `main.py` | punkt wejścia (start GUI) |
+| `gui.py` | interfejs i obsługa działań użytkownika |
+| `csv_reader.py` | odczyt/zapis CSV |
+| `shift_logic.py` | logika wyliczania zmian |
+| `run_windows.bat` | szybkie uruchomienie na Windows |
+| `run_mac.command` | szybkie uruchomienie na macOS |
+| `data/` | folder na pliki wyjściowe |
+
+---
+
+## 📝 Uwagi
+
+- Jeśli wyjściowy CSV jest otwarty w Excelu, zapis może zakończyć się błędem dostępu.
+- Folder docelowy tworzony jest automatycznie (jeśli nie istnieje).
+
+---
+
+## 👤 Autor
+
+[@miedolek](https://github.com/OleksandrMiedviediev)

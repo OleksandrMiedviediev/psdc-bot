@@ -1,82 +1,59 @@
-from datetime import time, timedelta
+from datetime import time, timedelta, date
 
 DAY_START = time(6, 30)
 DAY_END = time(17, 0)
-
 NIGHT_START = time(18, 0)
 NIGHT_END = time(4, 30)
 
+BASE_DATE = date(2026, 3, 8)        # старт 28-дневного цикла
+BASE_WEDNESDAY = date(2026, 3, 11)  # первая Wednesday → FRONT
+
 
 def get_period(t):
-    """
-    Определяет период смены: DAY или NIGHT
-    """
     if DAY_START <= t <= DAY_END:
         return "DAY"
-
     if t >= NIGHT_START or t <= NIGHT_END:
         return "NIGHT"
-
-    return "NONE"
-
-
-def toggle_type(shift_type):
-    """
-    Переключает NRT <-> STH
-    """
-    return "STH" if shift_type == "NRT" else "NRT"
+    return None
 
 
-def get_team(dt, wednesday_team):
-    """
-    Определяет FRONT / BACK
-    """
+def get_wednesday_team(dt):
+    weeks = (dt.date() - BASE_WEDNESDAY).days // 7
+    return "FRONT" if weeks % 2 == 0 else "BACK"
+
+
+def get_team(dt):
     if dt.time() <= NIGHT_END:
-        date = (dt - timedelta(days=1)).date()
+        date_value = (dt - timedelta(days=1)).date()
     else:
-        date = dt.date()
-
-    weekday = date.weekday()
-
+        date_value = dt.date()
+    weekday = date_value.weekday()
     if weekday in (6, 0, 1):
         return "FRONT"
-
     if weekday in (3, 4, 5):
         return "BACK"
+    return get_wednesday_team(dt)
 
-    return wednesday_team
+
+def get_shift_type(dt):
+    days = (dt.date() - BASE_DATE).days
+    rotation = (days // 28) % 2
+    if rotation == 0:
+        return {"STH": "DAY", "NRT": "NIGHT"}
+    return {"STH": "NIGHT", "NRT": "DAY"}
 
 
-def assign_shifts(rows, state):
-    """
-    Основная логика назначения смен
-    """
-
-    prev_period = None
-    current_type = None
-
+def assign_shifts(rows):
     for row in rows:
         dt = row["datetime"]
-        t = dt.time()
-
-        period = get_period(t)
-
-        if period == "NONE":
+        period = get_period(dt.time())
+        if not period:
             row["shift"] = ""
             continue
-
-        if current_type is None:
-            current_type = state["first_day_type"]
+        team = get_team(dt)
+        mapping = get_shift_type(dt)
+        if mapping["STH"] == period:
+            shift_type = "STH"
         else:
-            if prev_period and period != prev_period:
-                current_type = toggle_type(current_type)
-
-        team = get_team(dt, state["wednesday_team"])
-
-        row["shift"] = f"{team} {current_type}"
-
-        prev_period = period
-
-
-def assign_shift(rows, state):
-    assign_shifts(rows, state)
+            shift_type = "NRT"
+        row["shift"] = f"{team} {shift_type}"
