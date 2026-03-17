@@ -5,8 +5,7 @@ from pathlib import Path
 from datetime import timedelta
 
 TIME_FIELDS = (
-    "First container scan to trailer",
-    "first_container_scan_to_trailer_time_local",
+    "Departure time (UTC)",
 )
 
 KNOWN_DATETIME_FORMATS = (
@@ -22,6 +21,10 @@ KNOWN_DATETIME_FORMATS = (
     "%m/%d/%Y %H:%M",
     "%d/%m/%Y %H:%M:%S",
     "%d/%m/%Y %H:%M",
+    "%m/%d/%Y %I:%M:%S %p",
+    "%m/%d/%Y %I:%M %p",
+    "%d/%m/%Y %I:%M:%S %p",
+    "%d/%m/%Y %I:%M %p",
     "%Y-%m-%d",
     "%d.%m.%Y",
     "%d-%m-%Y",

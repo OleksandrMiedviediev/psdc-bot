@@ -17,26 +17,30 @@ def get_period(t):
     return None
 
 
-def get_wednesday_team(dt):
-    weeks = (dt.date() - BASE_WEDNESDAY).days // 7
+def get_operational_date(dt):
+    if dt.time() <= NIGHT_END:
+        return (dt - timedelta(days=1)).date()
+    return dt.date()
+
+
+def get_wednesday_team(date_value):
+    weeks = (date_value - BASE_WEDNESDAY).days // 7
     return "FRONT" if weeks % 2 == 0 else "BACK"
 
 
 def get_team(dt):
-    if dt.time() <= NIGHT_END:
-        date_value = (dt - timedelta(days=1)).date()
-    else:
-        date_value = dt.date()
+    date_value = get_operational_date(dt)
     weekday = date_value.weekday()
     if weekday in (6, 0, 1):
         return "FRONT"
     if weekday in (3, 4, 5):
         return "BACK"
-    return get_wednesday_team(dt)
+    return get_wednesday_team(date_value)
 
 
 def get_shift_type(dt):
-    days = (dt.date() - BASE_DATE).days
+    date_value = get_operational_date(dt)
+    days = (date_value - BASE_DATE).days
     rotation = (days // 28) % 2
     if rotation == 0:
         return {"STH": "DAY", "NRT": "NIGHT"}
